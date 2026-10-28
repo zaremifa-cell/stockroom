@@ -98,3 +98,20 @@ td { padding: 12px; border-top: 1px solid var(--line); vertical-align: top; }
 td.low { color: var(--warn); font-weight: 600; }
 td.neg { color: var(--bad); }
 td.pos { color: var(--ok); }
+
+/* Phone: the stock table becomes one card per product, all warehouses visible without sideways scrolling. */
+.stock-cards { display: none; list-style: none; margin: 0; padding: 0; }
+@media (max-width: 640px) {
+    .stock-cards + .table-wrap { display: none; }
+    .stock-cards { display: grid; }
+    .stock-card { padding: 16px 0; border-top: 1px solid var(--line); display: grid; gap: 12px; }
+    .stock-card:first-child { border-top: 0; padding-top: 0; }
+    .stock-card-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+    .stock-total { font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+    .stock-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0; }
+    .stock-grid > div { padding: 8px 10px; background: var(--bg); border: 1px solid var(--line); }
+    .stock-grid dd { margin: 2px 0 0; font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
+    .stock-grid .low dd { color: var(--warn); }
+    .card { padding: 16px; }
+    .row input[type='search'] { width: 100%; }
+}

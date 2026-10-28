@@ -38,6 +38,21 @@ const value = computed(() => props.products.reduce((n, p) => n + p.total * p.pri
                     <label class="check"><input v-model="lowOnly" type="checkbox" /> Low stock only</label>
                 </div>
             </div>
+            <ul class="stock-cards" aria-label="Stock by warehouse">
+                <li v-for="p in rows" :key="p.id" class="stock-card">
+                    <div class="stock-card-head">
+                        <div><strong>{{ p.name }}</strong><div class="muted small"><code>{{ p.sku }}</code> · {{ euros(p.price_cents) }}</div></div>
+                        <span class="stock-total">{{ p.total }}</span>
+                    </div>
+                    <dl class="stock-grid">
+                        <div v-for="w in warehouses" :key="w.id" :class="{ low: isLow(p, w.id) }">
+                            <dt class="muted small">{{ w.name }}</dt>
+                            <dd>{{ p.stock[w.id] ?? 0 }}<span v-if="isLow(p, w.id)" class="sr"> (low)</span></dd>
+                        </div>
+                    </dl>
+                </li>
+                <li v-if="rows.length === 0" class="muted">No products match.</li>
+            </ul>
             <div class="table-wrap">
                 <table>
                     <thead>
