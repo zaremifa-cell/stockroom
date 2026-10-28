@@ -1,5 +1,7 @@
 # Stockroom — inventory across warehouses
 
+**Live demo:** https://stockroom-w30t.onrender.com (free server: the first visit can take up to a minute; data resets every 24 hours)
+
 A small inventory system for a company that sells physical products from several warehouses,
 built with **PHP 8.5, Laravel 13, PostgreSQL and Vue 3**.
 
