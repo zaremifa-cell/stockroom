@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Updates prices from a CSV with "sku" and "price" columns (price in euros, "12.50" or "12,50").
+ * Files saved by Excel work too: the UTF-8 byte order mark is ignored, and semicolon-separated
+ * files (Excel's default where the comma is the decimal separator) are recognised from the header.
  *
  * - The same file uploaded twice is applied once: it is identified by a SHA-256 of its contents.
  * - Valid rows are applied together in one transaction; each invalid row is reported with its
@@ -77,12 +79,14 @@ class ImportPrices
     /** @return array{0: array<int, array{line:int, sku:string, price_cents:int}>, 1: array<int, array{line:int, message:string}>} */
     public function parse(string $contents): array
     {
+        $contents = preg_replace('/^\xEF\xBB\xBF/', '', $contents);
         $lines = array_values(array_filter(explode("\n", trim($contents)), fn ($l) => trim($l) !== ''));
         if ($lines === []) {
             return [[], [['line' => 1, 'message' => 'The file is empty.']]];
         }
 
-        $header = array_map(fn ($h) => strtolower(trim($h)), str_getcsv($lines[0], escape: ''));
+        $separator = str_contains($lines[0], ';') && ! str_contains($lines[0], ',') ? ';' : ',';
+        $header = array_map(fn ($h) => strtolower(trim($h)), str_getcsv($lines[0], $separator, escape: ''));
         $skuCol = array_search('sku', $header, true);
         $priceCol = array_search('price', $header, true);
         if ($skuCol === false || $priceCol === false) {
@@ -92,7 +96,7 @@ class ImportPrices
         $rows = $errors = $seen = [];
         foreach (array_slice($lines, 1) as $i => $raw) {
             $lineNo = $i + 2;
-            $cells = str_getcsv($raw, escape: '');
+            $cells = str_getcsv($raw, $separator, escape: '');
             $sku = trim($cells[$skuCol] ?? '');
             $price = trim($cells[$priceCol] ?? '');
 

@@ -29,4 +29,13 @@ class PriceParsingTest extends TestCase
         $this->assertCount(1, $rows);
         $this->assertSame([['line' => 3, 'message' => 'KTL appears twice (first on line 2).']], $errors);
     }
+
+    public function test_files_saved_by_excel_are_read(): void
+    {
+        // UTF-8 with a byte order mark, and semicolons with comma decimals (European Excel).
+        [$rows, $errors] = (new ImportPrices)->parse("\xEF\xBB\xBFsku;price\r\nKTL;12,50\r\nPAN;9\r\n");
+
+        $this->assertSame([], $errors);
+        $this->assertSame([1250, 900], array_column($rows, 'price_cents'));
+    }
 }
