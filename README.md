@@ -42,7 +42,8 @@ app/Services/ImportPrices.php    CSV parsing and price updates
 app/Http/Controllers/Api/        thin JSON controllers with request validation
 resources/js/                    Vue 3 single-page interface
 tests/                           PHPUnit feature and unit tests
-docker/, Dockerfile, docker-compose.yml   nginx + PHP-FPM + PostgreSQL
+docker/, Dockerfile, docker-compose.yml   nginx + PHP-FPM in one image, PostgreSQL beside it
+render.yaml                      free Render deployment
 ```
 
 ## Run it locally
@@ -60,10 +61,16 @@ php artisan serve
 
 ## Run it with Docker (nginx + PHP-FPM + PostgreSQL)
 
+One image runs nginx and PHP-FPM together and listens on `$PORT`, so the same image runs
+locally and on a platform such as Render. On start it migrates, seeds an empty database and,
+when `DEMO_RESET_HOURS` is set, resets demo data older than that.
+
 ```bash
 APP_KEY=$(php artisan key:generate --show) docker compose up --build
 # http://localhost:8080
 ```
+
+`render.yaml` describes the free Render deployment; the database URL comes from Neon.
 
 ## Tests
 
@@ -71,8 +78,8 @@ APP_KEY=$(php artisan key:generate --show) docker compose up --build
 php artisan test
 ```
 
-30 tests: orders, shortages and rollback, idempotency, transfers, the database constraint,
-CSV parsing and price imports. GitHub Actions runs them against PostgreSQL, checks code style
+33 tests: orders, shortages and rollback, idempotency, transfers, the database constraint,
+CSV parsing, price imports and the demo reset. GitHub Actions runs them against PostgreSQL, checks code style
 with Laravel Pint and builds the frontend on every push.
 
 ## API

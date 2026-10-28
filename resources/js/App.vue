@@ -52,5 +52,7 @@ onMounted(refresh);
             <PriceImport v-else-if="tab === 'prices'" @changed="refresh" />
             <History v-else />
         </main>
+
+        <footer class="foot muted small">Demo with sample data. On the public demo, data is reset every 24 hours.</footer>
     </div>
 </template>

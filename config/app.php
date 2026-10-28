@@ -15,6 +15,9 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    // Public demo: wipe and reseed the data when it is older than this many hours (0 = never).
+    'demo_reset_hours' => (int) env('DEMO_RESET_HOURS', 0),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

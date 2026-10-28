@@ -51,6 +51,7 @@ a { color: var(--text); }
 .tabs button.active { background: var(--accent); color: var(--accent-text); }
 
 .stack { display: grid; gap: 16px; }
+.foot { margin-top: 32px; }
 .card { display: grid; gap: 16px; padding: 24px; background: var(--surface); border: 1px solid var(--line); border-radius: 0; }
 .card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
 .muted { color: var(--muted); }
